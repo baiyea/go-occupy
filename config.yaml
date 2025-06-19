@@ -1,0 +1,51 @@
+# Go-Occupy 配置文件示例
+# 可以通过环境变量或命令行参数覆盖这些设置
+
+# 资源使用目标配置
+resources:
+  # 内存使用百分比 (0-100)
+  memory_percent: 50.0
+  
+  # CPU使用百分比 (0-100)
+  cpu_percent: 30.0
+  
+  # 磁盘使用百分比 (0-100)
+  disk_percent: 50.0
+
+# 监控配置
+monitoring:
+  # 监控间隔 (支持: 1s, 5s, 10s, 30s, 1m, 5m)
+  interval: "5s"
+  
+  # 是否启用详细日志
+  verbose: true
+  
+  # 日志级别 (debug, info, warn, error)
+  log_level: "info"
+
+# 磁盘配置
+disk:
+  # 临时文件目录
+  temp_dir: "/tmp"
+  
+  # 临时文件大小 (MB)
+  temp_file_size: 1
+  
+  # 最大临时文件数量
+  max_temp_files: 100
+
+# 内存配置
+memory:
+  # 内存分配步长 (MB)
+  allocation_step: 10
+  
+  # 最大内存分配 (MB)
+  max_allocation: 1000
+
+# CPU配置
+cpu:
+  # CPU负载线程数 (0表示使用所有CPU核心)
+  load_threads: 0
+  
+  # CPU负载类型 (busy, idle, mixed)
+  load_type: "busy" 
