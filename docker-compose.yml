@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  go-occupy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: go-occupy:latest
+    container_name: go-occupy-app
+    restart: unless-stopped
+    
+    # 开发模式配置
+    profiles:
+      - dev
+    command: ["-m", "30", "-c", "20", "-d", "60"]
+    
+    # 测试模式配置
+    profiles:
+      - test
+    command: ["-m", "50", "-c", "30", "-d", "70"]
+    
+    # 高负载模式配置
+    profiles:
+      - high-load
+    command: ["-m", "80", "-c", "70", "-d", "90"]
+    
+    # 环境变量
+    environment:
+      - TZ=Asia/Shanghai
+      - GO_ENV=production
+    
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "ps", "aux", "|", "grep", "go-occupy", "||", "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # 网络配置
+    networks:
+      - go-occupy-network
+
+  # 监控服务（可选）
+  monitor:
+    image: prom/prometheus:latest
+    container_name: go-occupy-monitor
+    profiles:
+      - monitor
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - go-occupy-network
+
+  # Grafana 仪表板（可选）
+  grafana:
+    image: grafana/grafana:latest
+    container_name: go-occupy-grafana
+    profiles:
+      - monitor
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - go-occupy-network
+
+networks:
+  go-occupy-network:
+    driver: bridge
+
+volumes:
+  prometheus_data:
+  grafana_data: 

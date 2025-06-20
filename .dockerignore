@@ -1,0 +1,48 @@
+# Git 相关
+.git
+.gitignore
+
+# 构建产物
+go-occupy
+*.exe
+*.dll
+*.so
+*.dylib
+
+# 测试文件
+*.test
+*.out
+coverage.out
+coverage.html
+
+# 临时文件
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDE 相关
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 日志文件
+*.log
+
+# 文档
+README.md
+*.md
+
+# Makefile
+Makefile
+
+# Docker 相关
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# 其他
+.env
+.env.local 
