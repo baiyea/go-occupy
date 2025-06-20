@@ -165,6 +165,12 @@ push_image() {
     if [[ "$registry" == "docker.io" ]]; then
         # Docker Hub 不需要前缀
         full_image_name="$IMAGE_NAME:$TAG"
+
+        # 检查是否已登录 Docker Hub
+        if ! docker info | grep -q "Username"; then
+            echo "请先登录 Docker Hub:"
+            docker login
+        fi
     else
         full_image_name="$registry/$IMAGE_NAME:$TAG"
     fi
