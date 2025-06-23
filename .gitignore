@@ -16,7 +16,7 @@ coverage.txt
 
 # 临时文件
 /tmp/
-./cursor/
+.cursor/
 
 # IDE文件
 .vscode/
