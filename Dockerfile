@@ -49,5 +49,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 # 设置入口点
 ENTRYPOINT ["./go-occupy"]
 
-# 默认命令
-CMD ["--help"] 
+# 默认命令 - 使用程序默认参数运行
+CMD ["-m", "50", "-c", "30", "-d", "40"] 
