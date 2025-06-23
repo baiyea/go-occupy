@@ -1,0 +1,107 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Go-Occupy 简化项目结构
+
+## 项目简化原则
+
+### 1. 去掉测试环节
+- 移除所有测试文件和测试目录
+- 简化构建流程，专注于核心功能
+- 减少项目复杂度，提高开发效率
+
+### 2. 模块化设计
+- 核心业务逻辑独立到 `pkg/occupy` 包
+- 主程序只负责入口和参数处理
+- 清晰的模块边界和职责分离
+
+## 核心文件结构
+
+### 应用程序入口
+- [main.go](mdc:main.go) - 程序主入口，处理命令行参数和程序启动
+
+### 核心业务模块
+- [pkg/occupy/occupy.go](mdc:pkg/occupy/occupy.go) - 资源占用核心逻辑
+  - ResourceMonitor: 统一的资源管理器
+  - CPU、内存、磁盘资源占用功能
+  - 资源释放和清理机制
+
+### 配置文件
+- [config.yaml](mdc:config.yaml) - 应用程序配置
+- [go.mod](mdc:go.mod) - Go模块依赖
+- [go.sum](mdc:go.sum) - 依赖校验
+
+### 构建和部署
+- [Makefile](mdc:Makefile) - 简化的构建命令（已移除测试相关）
+- [Dockerfile](mdc:Dockerfile) - Docker镜像构建
+- [docker-compose.yml](mdc:docker-compose.yml) - 容器编排
+- [docker-build.sh](mdc:docker-build.sh) - Docker构建脚本
+
+## 模块化架构
+
+### 包结构设计
+```
+go-occupy/
+├── main.go              # 程序入口
+├── pkg/
+│   └── occupy/          # 核心业务逻辑
+│       └── occupy.go    # 资源占用实现
+├── config.yaml          # 配置文件
+└── 构建部署文件...
+```
+
+### 职责分离
+- **main.go**: 程序入口、参数解析、配置加载
+- **pkg/occupy**: 核心业务逻辑、资源管理
+- **配置文件**: 参数配置、环境设置
+- **构建文件**: 编译、打包、部署
+
+## 开发流程简化
+
+### 构建命令
+```bash
+make build    # 构建可执行文件
+make run      # 运行程序
+make dev      # 开发模式运行
+make clean    # 清理构建文件
+```
+
+### Docker部署
+```bash
+make docker-build    # 构建Docker镜像
+make docker-run      # 运行Docker容器
+make docker-push     # 推送镜像
+```
+
+## 代码组织原则
+
+### 1. 单一职责
+- 每个模块只负责一个核心功能
+- 避免模块间的复杂依赖
+- 清晰的接口定义
+
+### 2. 配置驱动
+- 通过配置文件控制程序行为
+- 支持命令行参数覆盖
+- 合理的默认值设置
+
+### 3. 错误处理
+- 统一的错误处理机制
+- 详细的错误信息
+- 优雅的资源清理
+
+## 性能优化
+
+### 资源管理
+- 及时释放不再使用的资源
+- 使用goroutine管理并发
+- 避免内存泄漏
+- 合理的资源限制
+
+### 监控和日志
+- 关键操作日志记录
+- 资源使用情况监控
+- 性能指标收集
+- 调试模式支持

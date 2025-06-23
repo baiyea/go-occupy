@@ -1,0 +1,69 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Go-Occupy 项目结构规则
+
+## 项目概述
+这是一个Go语言资源占用工具，用于模拟系统资源占用场景。
+
+## 核心文件结构
+
+### 入口文件
+- [main.go](mdc:main.go) - 应用程序主入口点，负责命令行参数解析和程序启动
+
+### 核心模块
+- [pkg/occupy/occupy.go](mdc:pkg/occupy/occupy.go) - 核心资源占用逻辑模块
+  - ResourceMonitor: 资源监控器，管理CPU、内存、磁盘占用
+  - 提供资源占用、释放、清理等核心功能
+
+### 配置文件
+- [config.yaml](mdc:config.yaml) - 应用程序配置文件
+- [go.mod](mdc:go.mod) - Go模块依赖管理
+- [go.sum](mdc:go.sum) - Go模块校验和
+
+### 构建和部署
+- [Makefile](mdc:Makefile) - 项目构建和任务管理
+- [Dockerfile](mdc:Dockerfile) - Docker镜像构建配置
+- [docker-compose.yml](mdc:docker-compose.yml) - Docker Compose服务配置
+- [docker-build.sh](mdc:docker-build.sh) - Docker构建脚本
+- [.dockerignore](mdc:.dockerignore) - Docker忽略文件配置
+
+### 文档
+- [README.md](mdc:README.md) - 项目说明文档
+- [DOCKER.md](mdc:DOCKER.md) - Docker使用说明
+
+## 模块化设计原则
+
+### 1. 核心逻辑分离
+- 业务逻辑放在 `pkg/occupy` 包中
+- main.go 只负责程序入口和参数处理
+- 配置管理独立于业务逻辑
+
+### 2. 依赖管理
+- 使用Go模块系统管理依赖
+- 外部依赖通过go.mod定义
+- 内部包通过相对路径导入
+
+### 3. 构建流程
+- Makefile提供统一的构建命令
+- 支持本地构建和Docker构建
+- 配置文件和二进制文件分离
+
+## 开发规范
+
+### 代码组织
+- 核心功能模块化到pkg目录
+- 每个模块职责单一，接口清晰
+- 避免循环依赖
+
+### 配置管理
+- 使用YAML格式配置文件
+- 支持环境变量覆盖
+- 配置验证和默认值处理
+
+### 错误处理
+- 统一的错误处理机制
+- 详细的错误信息记录
+- 优雅的资源清理

@@ -24,15 +24,27 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o go-occupy main.go
 # 第二阶段：运行阶段
 FROM alpine:latest
 
+# 安装运行时依赖
+RUN apk --no-cache add ca-certificates tzdata && \
+    addgroup -g 1001 appgroup && \
+    adduser -u 1001 -G appgroup -s /bin/sh -D appuser
+
 # 设置工作目录
 WORKDIR /app
 
 # 从构建阶段复制二进制文件
 COPY --from=builder /app/go-occupy .
 
+# 设置文件权限
+RUN chmod +x go-occupy && \
+    chown appuser:appgroup go-occupy
+
+# 切换到非root用户
+USER appuser
+
 # 设置健康检查
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD ps aux | grep go-occupy || exit 1
+    CMD pgrep go-occupy > /dev/null || exit 1
 
 # 设置入口点
 ENTRYPOINT ["./go-occupy"]
