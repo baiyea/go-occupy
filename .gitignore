@@ -15,8 +15,8 @@ go-occupy
 coverage.txt
 
 # 临时文件
-/tmp/occupy_*.tmp
-*.tmp
+/tmp/
+./cursor/
 
 # IDE文件
 .vscode/

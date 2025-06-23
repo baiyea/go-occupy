@@ -1,6 +1,6 @@
 ---
-description:
-globs:
+description: 
+globs: 
 alwaysApply: false
 ---
 # Go-Occupy 简化项目结构
@@ -36,8 +36,6 @@ alwaysApply: false
 ### 构建和部署
 - [Makefile](mdc:Makefile) - 简化的构建命令（已移除测试相关）
 - [Dockerfile](mdc:Dockerfile) - Docker镜像构建
-- [docker-compose.yml](mdc:docker-compose.yml) - 容器编排
-- [docker-build.sh](mdc:docker-build.sh) - Docker构建脚本
 
 ## 模块化架构
 
@@ -70,9 +68,9 @@ make clean    # 清理构建文件
 
 ### Docker部署
 ```bash
-make docker-build    # 构建Docker镜像
-make docker-run      # 运行Docker容器
-make docker-push     # 推送镜像
+make docker-build       # 构建Docker镜像
+make docker-build-multi # 构建Docker镜像(多平台)
+make docker-build-push  # 构建并推送(多平台)
 ```
 
 ## 代码组织原则

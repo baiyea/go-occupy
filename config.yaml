@@ -10,7 +10,7 @@ resources:
   cpu_percent: 30.0
   
   # 磁盘使用百分比 (0-100)
-  disk_percent: 50.0
+  disk_percent: 40.0
 
 # 监控配置
 monitoring:

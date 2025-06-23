@@ -26,13 +26,10 @@ alwaysApply: false
 ### 构建和部署
 - [Makefile](mdc:Makefile) - 项目构建和任务管理
 - [Dockerfile](mdc:Dockerfile) - Docker镜像构建配置
-- [docker-compose.yml](mdc:docker-compose.yml) - Docker Compose服务配置
-- [docker-build.sh](mdc:docker-build.sh) - Docker构建脚本
 - [.dockerignore](mdc:.dockerignore) - Docker忽略文件配置
 
 ### 文档
 - [README.md](mdc:README.md) - 项目说明文档
-- [DOCKER.md](mdc:DOCKER.md) - Docker使用说明
 
 ## 模块化设计原则
 

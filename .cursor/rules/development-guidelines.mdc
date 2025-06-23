@@ -58,8 +58,8 @@ make clean
 # 构建Docker镜像
 make docker-build
 
-# 运行Docker容器
-make docker-run
+# 构建Docker镜像(多平台)
+make docker-build-multi
 
 # 推送镜像
 make docker-push

@@ -1,4 +1,4 @@
-.PHONY: build run clean help docker-build docker-build-multi docker-push
+.PHONY: build run clean help docker-build docker-build-multi docker-build-push
 
 # 默认目标
 .DEFAULT_GOAL := help
@@ -72,18 +72,41 @@ docker-build: ## 构建 Docker 镜像
 	@echo "Docker 镜像构建完成: $(DOCKER_IMAGE_NAME):$(DOCKER_TAG)"
 
 # Docker 多平台构建
-docker-build-multi: ## 构建多平台 Docker 镜像
+docker-build-multi: ## 构建多平台 Docker 镜像（不推送）
 	@echo "构建多平台 Docker 镜像..."
-	docker buildx build --platform linux/amd64,linux/arm64 -t $(DOCKER_IMAGE_NAME):$(DOCKER_TAG) --push .
+	@echo "检查并创建 buildx builder..."
+	@if ! docker buildx inspect multiplatform >/dev/null 2>&1; then \
+		echo "创建新的 buildx builder..."; \
+		docker buildx create --name multiplatform --driver docker-container --use; \
+	else \
+		echo "使用已存在的 buildx builder..."; \
+		docker buildx use multiplatform; \
+	fi
+	@echo "启动 builder..."
+	docker buildx inspect --bootstrap
+	@echo "开始多平台构建（不推送）..."
+	docker buildx build --platform linux/amd64,linux/arm64 -t $(DOCKER_IMAGE_NAME):$(DOCKER_TAG) .
 	@echo "多平台 Docker 镜像构建完成: $(DOCKER_IMAGE_NAME):$(DOCKER_TAG)"
+	@echo "注意: 多平台镜像已构建但未推送，使用 'make docker-build-push' 推送"
 
-
-
-# Docker 推送
-docker-push: ## 推送 Docker 镜像到 Docker Hub
-	@echo "推送 Docker 镜像到 Docker Hub..."
-	docker push $(DOCKER_IMAGE_NAME):$(DOCKER_TAG)
-	@echo "Docker 镜像推送完成"
+# Docker 构建并推送（多平台）
+docker-build-push: ## 重新构建并推送多平台 Docker 镜像
+	@echo "推送多平台 Docker 镜像到 Docker Hub..."
+	@echo "检查 buildx builder 是否存在..."
+	@if ! docker buildx inspect multiplatform >/dev/null 2>&1; then \
+		echo "错误: 请先运行 'make docker-build-multi' 构建多平台镜像"; \
+		exit 1; \
+	fi
+	@echo "使用已存在的 buildx builder..."
+	docker buildx use multiplatform
+	@echo "开始推送多平台镜像..."
+	docker buildx build --platform linux/amd64,linux/arm64 -t $(DOCKER_IMAGE_NAME):$(DOCKER_TAG) --push .
+	@echo "清理 buildx builder..."
+	@if docker buildx inspect multiplatform >/dev/null 2>&1; then \
+		docker buildx rm multiplatform; \
+		echo "buildx builder 已清理"; \
+	fi
+	@echo "多平台 Docker 镜像推送完成"
 
 # 完整构建流程
 all: deps fmt lint-check build ## 完整构建流程
@@ -96,9 +119,9 @@ help: ## 显示帮助信息
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 	@echo ""
 	@echo "Docker 命令:"
-	@echo "  make docker-build       # 构建 Docker 镜像"
-	@echo "  make docker-build-multi # 构建多平台 Docker 镜像"
-	@echo "  make docker-push        # 推送 Docker 镜像到 Docker Hub"
+	@echo "  make docker-build       # 构建 Docker 镜像（本地单平台）"
+	@echo "  make docker-build-multi # 构建多平台 Docker 镜像（不推送）"
+	@echo "  make docker-build-push  # 重新构建并推送多平台 Docker 镜像"
 	@echo ""
 	@echo "示例:"
 	@echo "  make build          # 构建可执行文件"
