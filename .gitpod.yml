@@ -1,0 +1,42 @@
+# Gitpod 配置文件
+# 用于 go-occupy 项目的自动化环境设置
+
+# 工作空间任务配置
+tasks:
+  - name: 初始化并构建多平台 Docker 镜像
+    init: |
+      # 安装依赖
+      make deps
+      # 构建多平台 Docker 镜像
+      make docker-build-multi
+    command: |
+      echo "✅ 工作空间初始化完成！"
+      echo "多平台 Docker 镜像已构建完成"
+      echo ""
+      echo "可用命令："
+      echo "  make help           - 查看所有可用命令"
+      echo "  make run           - 运行程序"
+      echo "  make dev           - 开发模式运行"
+      echo "  make docker-build-push - 构建推送多平台镜像"
+
+# 端口配置（如果需要）
+ports:
+  - port: 8080
+    onOpen: ignore
+
+# VSCode 扩展
+vscode:
+  extensions:
+    - golang.go
+    - ms-vscode.makefile-tools
+
+# 使用包含 Docker 的预构建镜像
+image: gitpod/workspace-full:latest
+
+# GitHub 预构建配置
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    addComment: true
